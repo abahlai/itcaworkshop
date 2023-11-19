@@ -1,0 +1,63 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: itcaworkshop
+  region: eu-west-2
+  version: "1.28"
+
+privateCluster:
+  enabled: false
+
+vpc:
+  cidr: 10.10.0.0/16
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: false
+  nat:
+    gateway: Disable
+  # publicAccessCIDRs: ["1.1.1.1/32"]
+
+managedNodeGroups:
+  - name: default
+    instanceTypes: ["t3.medium", "t3a.medium"]
+    spot: true
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 2
+
+addons:
+  - name: vpc-cni # no version is specified so it deploys the default version
+    attachPolicyARNs:
+      - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+  - name: coredns
+    version: latest # auto discovers the latest available
+  - name: kube-proxy
+    version: latest
+  - name: aws-ebs-csi-driver
+    wellKnownPolicies:      # add IAM and service account
+      ebsCSIController: true
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+    - metadata:
+        name: s3-reader
+        namespace: default
+      attachPolicyARNs:
+      - "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    - metadata:
+        name: aws-load-balancer-controller
+        namespace: kube-system
+      wellKnownPolicies:
+        awsLoadBalancerController: true
+    - metadata:
+        name: external-dns
+        namespace: kube-system
+      wellKnownPolicies:
+        externalDNS: true
+    - metadata:
+        name: cert-manager
+        namespace: cert-manager
+      wellKnownPolicies:
+        certManager: true

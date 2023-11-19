@@ -1,0 +1,11 @@
+{
+    "configMigration": true,
+    "extends": [
+      "config:recommended"
+    ],
+    "commitMessageTopic": "Terraform {{depName}}",
+    "fileMatch": [
+        "\\.tf$"
+    ],
+    "pinDigests": false
+}

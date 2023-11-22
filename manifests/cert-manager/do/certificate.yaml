@@ -11,5 +11,4 @@ spec:
     group: cert-manager.io
   commonName: "*.ab-do.itcawork.shop"
   dnsNames:
-    - "ab-do.itcawork.shop"
     - "*.ab-do.itcawork.shop"

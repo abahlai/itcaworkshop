@@ -7,6 +7,10 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-nginx
 spec:
+  tls:
+     - hosts:
+       - echo.ab-do.itcawork.shop
+       secretName: letsencrypt-nginx-echo
   rules:
     - host: echo.ab-do.itcawork.shop
       http:

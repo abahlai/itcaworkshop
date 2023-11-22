@@ -1,0 +1,46 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-echo
+  namespace: backend
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-nginx
+spec:
+  rules:
+    - host: echo.ab-do.itcawork.shop
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: echo
+                port:
+                  number: 8080
+  ingressClassName: nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-quote
+  namespace: backend
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-nginx
+spec:
+  tls:
+     - hosts:
+       - quote.ab-do.itcawork.shop
+       secretName: letsencrypt-nginx-quote
+  rules:
+    - host: quote.ab-do.itcawork.shop
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: quote
+              port:
+                number: 80
+  ingressClassName: nginx

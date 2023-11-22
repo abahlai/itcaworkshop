@@ -1,0 +1,28 @@
+repositories:
+- name: metrics-server
+  url: https://kubernetes-sigs.github.io/metrics-server/
+- name: jetstack
+  url: https://charts.jetstack.io
+- name: gitlab
+  url: https://charts.gitlab.io
+
+releases:
+- name: metrics-server
+  namespace: kube-system
+  chart: metrics-server/metrics-server
+  version: 3.11.0
+
+- name: cert-manager
+  namespace: cert-manager
+  chart: jetstack/cert-manager
+  version: v1.13.2
+  values:
+    - installCRDs: true
+    - prometheus:
+        enabled: false
+
+- name: gitlab-runner
+  namespace: backend
+  chart: gitlab/gitlab-runner
+  values:
+    - "{{`{{ .Release.Name }}`}}/values.yaml"

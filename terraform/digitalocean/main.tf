@@ -5,7 +5,7 @@ data "digitalocean_kubernetes_versions" "patch" {
 
 # Create a new container registry
 resource "digitalocean_container_registry" "workshop_registry" {
-  name                   = local.cluster_name
+  name                   = "${local.cluster_name}-01"
   subscription_tier_slug = var.registry_tier
   region                 = var.region
 }

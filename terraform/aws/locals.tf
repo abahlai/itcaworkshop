@@ -33,4 +33,25 @@ locals {
   tags = {
     Project = local.name
   }
+
+  ### Charts
+  system_pods_namespace = "kube-system"
+
+  alb_ingress = {
+    name       = "aws-load-balancer-controller"
+    repository = "https://aws.github.io/eks-charts"
+    version    = "1.6.1"
+  }
+
+  external_dns = {
+    name       = "external-dns"
+    repository = "https://kubernetes-sigs.github.io/external-dns"
+    version    = "1.13.1"
+  }
+
+  external_secrets = {
+    name       = "external-secrets"
+    repository = "https://charts.external-secrets.io"
+    version    = "0.9.9"
+  }
 }

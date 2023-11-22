@@ -1,0 +1,42 @@
+gitlabUrl: https://gitlab.com/
+
+## Unregister all runners before termination
+##
+## Updating the runner's chart version or configuration will cause the runner container
+## to be terminated and created again. This may cause your Gitlab instance to reference
+## non-existant runners. Un-registering the runner before termination mitigates this issue.
+## ref: https://docs.gitlab.com/runner/commands/index.html#gitlab-runner-unregister
+##
+
+unregisterRunners: true
+
+## For RBAC support:
+rbac:
+  create: true
+  rules:
+  - resources: ["configmaps", "events", "pods", "pods/attach", "pods/exec", "secrets", "services"]
+    verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+
+  clusterWideAccess: true
+
+## Configuration for the Pods that the runner launches for each new job
+##
+runners:
+  secret: gitlab-runner-secret
+  # runner configuration, where the multi line strings is evaluated as
+  # template so you can specify helm values inside of it.
+  #
+  # tpl: https://helm.sh/docs/howto/charts_tips_and_tricks/#using-the-tpl-function
+  # runner configuration: https://docs.gitlab.com/runner/configuration/advanced-configuration.html
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+        image = "alpine"
+  name: "kubernetes-runner"

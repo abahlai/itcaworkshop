@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-dns
+  namespace: backend
+spec:
+  acme:
+    email: andriy.bahlai@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-dns-private
+    # List of challenge solvers that will be used to solve ACME challenges for the matching domains.
+    solvers:
+    # Use the DigitalOcean DNS API to manage DNS-01 challenge records.
+      - dns01:
+          digitalocean:
+            # Kubernetes secret that contains the DO API token.
+            # Must be in the same namespace as the Issuer CRD.
+            tokenSecretRef:
+              name: digitalocean-dns
+              key: access-token

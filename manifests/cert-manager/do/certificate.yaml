@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ab-do-itcawork-shop
+  namespace: backend
+spec:
+  secretName: ab-do-itcawork-shop-tls
+  issuerRef:
+    name: letsencrypt-dns
+    kind: Issuer
+    group: cert-manager.io
+  commonName: "*.ab-do.itcawork.shop"
+  dnsNames:
+    - "ab-do.itcawork.shop"
+    - "*.ab-do.itcawork.shop"

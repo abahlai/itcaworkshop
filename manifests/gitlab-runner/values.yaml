@@ -14,7 +14,7 @@ unregisterRunners: true
 rbac:
   create: true
   rules:
-  - resources: ["configmaps", "events", "pods", "pods/attach", "pods/exec", "secrets", "services"]
+  - resources: ["configmaps", "events", "pods", "pods/attach", "pods/exec", "secrets", "services", "namespaces"]
     verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
   - apiGroups: [""]
     resources: ["pods/exec"]
@@ -22,8 +22,13 @@ rbac:
   - apiGroups: [""]
     resources: ["pods/log"]
     verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "patch"]
 
   clusterWideAccess: true
+
+  # serviceAccountName: gitlab-runner
 
 ## Configuration for the Pods that the runner launches for each new job
 ##
@@ -39,4 +44,5 @@ runners:
       [runners.kubernetes]
         namespace = "{{.Release.Namespace}}"
         image = "alpine"
+        service_account = "gitlab-runner"
   name: "kubernetes-runner"

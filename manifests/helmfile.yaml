@@ -1,3 +1,6 @@
+helmDefaults:
+  historyMax: 3
+
 repositories:
 - name: metrics-server
   url: https://kubernetes-sigs.github.io/metrics-server/
@@ -5,12 +8,18 @@ repositories:
   url: https://charts.jetstack.io
 - name: gitlab
   url: https://charts.gitlab.io
+- name: grafana
+  url: https://grafana.github.io/helm-charts
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
+- name: elastic
+  url: https://helm.elastic.co
 
 releases:
 - name: metrics-server
   namespace: kube-system
   chart: metrics-server/metrics-server
-  version: 3.11.0
+  version: "3.11.0"
 
 - name: cert-manager
   namespace: cert-manager
@@ -26,3 +35,25 @@ releases:
   chart: gitlab/gitlab-runner
   values:
     - "{{`{{ .Release.Name }}`}}/values.yaml"
+
+- name: kube-prometheus-stack
+  namespace: monitoring
+  chart: prometheus-community/kube-prometheus-stack
+  values:
+    - "monitoring/{{`{{ .Release.Name }}`}}.yaml"
+
+- name: loki-stack
+  namespace: monitoring
+  chart: grafana/loki-stack
+  needs:
+  - kube-prometheus-stack
+  values:
+    - test_pod:
+        enabled: true
+    - loki:
+        persistence:
+          enabled: true
+
+- name: elastic-operator
+  namespace: elastic-stack
+  chart: elastic/eck-operator

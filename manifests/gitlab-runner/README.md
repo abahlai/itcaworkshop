@@ -2,7 +2,7 @@ Add the GitLab Helm repository:
 
 `helm repo add gitlab https://charts.gitlab.io`
 
-Create runner-token secret:
+## Create runner-token secret
 
 ```yaml
 apiVersion: v1
@@ -16,7 +16,7 @@ data:
   runner-token: "BASE64ENCODEDTOKEN"
 ```
 
-# Kubernetes pull secret
+## Kubernetes pull secret
 
 Create secret in the Kubernetes Cluster
 ```bash

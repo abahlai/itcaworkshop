@@ -1,0 +1,88 @@
+defaultRules:
+  rules:
+    windows: false
+
+prometheus-node-exporter:
+  resources:
+    requests:
+      memory: 20Mi
+
+prometheus:
+  prometheusSpec:
+    containers:
+    - name: config-reloader
+      resources:
+        limits:
+          cpu: 200m
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 30d
+
+grafana:
+  sidecar:
+    dashboards:
+      searchNamespace: monitoring
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  persistence:
+    enabled: true
+  ingress:
+    enabled: false
+    ingressClassName: nginx
+    hosts:
+      - monitoring.ab-do.itcawork.shop
+    tls:
+      - secretName: ab-do-itcawork-shop-tls
+        hosts:
+          - monitoring.ab-do.itcawork.shop
+  # Use pre-created secret for Grafana admin password
+  # /automation/secrets/grafana-password.yaml
+  # admin:
+  #   existingSecret: "grafana-password"
+  deploymentStrategy:
+    type: Recreate
+  resources:
+    requests:
+      memory: 60Mi
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'grafana-dashboards-kubernetes'
+        orgId: 1
+        folder: 'Kubernetes'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+  dashboards:
+    grafana-dashboards-kubernetes:
+      k8s-system-api-server:
+        url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+        token: ''
+      k8s-views-global:
+        url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+        token: ''
+      k8s-views-namespaces:
+        url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+        token: ''
+      k8s-views-nodes:
+        url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+        token: ''
+      k8s-views-pods:
+        url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+        token: ''
+
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kube-state-metrics:
+  resources:
+    requests:
+      memory: 25Mi

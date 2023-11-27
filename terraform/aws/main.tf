@@ -37,6 +37,9 @@ module "eks" {
         }
       })
     }
+    amazon-cloudwatch-observability = {
+      most_recent = true
+    }
   }
 
   vpc_id                   = module.vpc.vpc_id
@@ -74,6 +77,11 @@ module "eks" {
       enable_monitoring = false
 
       block_device_mappings = local.default_block_device_mappings
+
+      iam_role_additional_policies = {
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        CloudWatchAgentServerPolicy        = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      }
 
       tags = {
         ExtraTag = "ITCA Workshop"

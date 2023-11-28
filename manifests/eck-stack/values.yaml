@@ -6,6 +6,9 @@ eck-elasticsearch:
   #
   fullnameOverride: elasticsearch
 
+  annotations:
+    eck.k8s.elastic.co/license: basic
+
   nodeSets:
   - name: default
     count: 1
@@ -23,6 +26,9 @@ eck-kibana:
   # Name of the Kibana instance.
   #
   fullnameOverride: kibana
+
+  annotations:
+    eck.k8s.elastic.co/license: basic
 
   spec:
     # Reference to ECK-managed Elasticsearch instance, ideally from {{ "elasticsearch.fullname" }}
@@ -78,6 +84,9 @@ eck-kibana:
 eck-agent:
   enabled: true
 
+  annotations:
+    eck.k8s.elastic.co/license: basic
+
   spec:
     # Agent policy to be used.
     policyID: eck-agent
@@ -109,6 +118,9 @@ eck-fleet-server:
   enabled: true
 
   fullnameOverride: "fleet-server"
+
+  annotations:
+    eck.k8s.elastic.co/license: basic
 
   spec:
     # Agent policy to be used.

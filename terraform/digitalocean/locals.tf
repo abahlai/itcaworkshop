@@ -3,7 +3,7 @@ locals {
   cluster_version = "1.28."
 
   worker_name  = "default"
-  worker_size  = "s-2vcpu-4gb"
+  worker_size  = "s-4vcpu-8gb"
   worker_count = 2
 
   maintenance_window = {
